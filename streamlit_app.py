@@ -4,6 +4,7 @@ import random
 import numpy as np
 import folium
 from streamlit_folium import st_folium
+from st_aggrid import AgGrid, GridOptionsBuilder
 
 # Função para gerar dados simulados da SPTrans
 @st.cache_data
@@ -41,14 +42,25 @@ def criar_mapa(dados):
 # Título da aplicação
 st.title("Dados Simulados de Ônibus - SPTrans")
 
+# Barra lateral para selecionar visualização
+menu = st.sidebar.selectbox("Selecione a visualização", ["Tabela", "Mapa"])
+
 # Gerar dados simulados
 dados_simulados = gerar_dados_sptrans_simulados()
 
-# Exibir os dados na aplicação (tabela)
-st.subheader("Tabela de Dados Simulados")
-st.dataframe(dados_simulados)
+# Mostrar a tabela ou o mapa com base na seleção
+if menu == "Tabela":
+    st.subheader("Tabela de Dados Simulados")
+    
+    # Melhorar a tabela usando AgGrid
+    gb = GridOptionsBuilder.from_dataframe(dados_simulados)
+    gb.configure_pagination(paginationAutoPageSize=True)  # Paginação automática
+    gb.configure_side_bar()  # Barra lateral de ferramentas
+    grid_options = gb.build()
+    
+    AgGrid(dados_simulados, gridOptions=grid_options, theme='blue')  # Tabela interativa com tema 'blue'
 
-# Criar e exibir o mapa
-st.subheader("Mapa dos Ônibus Simulados")
-mapa = criar_mapa(dados_simulados)
-st_folium(mapa, width=700, height=500)
+elif menu == "Mapa":
+    st.subheader("Mapa dos Ônibus Simulados")
+    mapa = criar_mapa(dados_simulados)
+    st_folium(mapa, width=700, height=500)
