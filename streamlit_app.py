@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import random
 import numpy as np
+import folium
+from streamlit_folium import st_folium
 
 # Função para gerar dados simulados da SPTrans
 def gerar_dados_sptrans_simulados(n_linhas=5, n_onibus=30):
@@ -24,7 +26,24 @@ def gerar_dados_sptrans_simulados(n_linhas=5, n_onibus=30):
 # Título da aplicação
 st.title("Dados Simulados de Ônibus - SPTrans")
 
-# Gerar e exibir dados simulados
+# Gerar dados simulados
 dados_simulados = gerar_dados_sptrans_simulados()
+
+# Exibir os dados na aplicação (tabela)
 st.subheader("Tabela de Dados Simulados")
 st.dataframe(dados_simulados)
+
+# Criar o mapa
+st.subheader("Mapa dos Ônibus Simulados")
+mapa = folium.Map(location=[-23.5505, -46.6333], zoom_start=12)
+
+# Adicionar os pontos dos ônibus ao mapa
+for index, row in dados_simulados.iterrows():
+    folium.Marker(
+        location=[row['latitude'], row['longitude']],
+        popup=f"Linha: {row['linha']}<br>Destino: {row['destino']}<br>Chegada: {row['previsao_chegada']}",
+        icon=folium.Icon(color="blue", icon="bus", prefix="fa")
+    ).add_to(mapa)
+
+# Mostrar o mapa interativo no Streamlit
+st_folium(mapa, width=700, height=500)
