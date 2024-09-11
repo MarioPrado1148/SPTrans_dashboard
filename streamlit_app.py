@@ -42,13 +42,13 @@ def criar_mapa(dados):
 # Título da aplicação
 st.title("Dados Simulados de Ônibus - SPTrans")
 
-# Barra lateral para selecionar visualização
-menu = st.sidebar.selectbox("Selecione a visualização", ["Tabela", "Mapa"])
+# Barra lateral para selecionar a visualização
+menu = st.sidebar.radio("Escolha o que deseja visualizar:", ["Tabela", "Mapa Interativo"])
 
 # Gerar dados simulados
 dados_simulados = gerar_dados_sptrans_simulados()
 
-# Mostrar a tabela ou o mapa com base na seleção
+# Mostrar a tabela ou o mapa com base na seleção do usuário
 if menu == "Tabela":
     st.subheader("Tabela de Dados Simulados")
     
@@ -58,9 +58,9 @@ if menu == "Tabela":
     gb.configure_side_bar()  # Barra lateral de ferramentas
     grid_options = gb.build()
     
-    AgGrid(dados_simulados, gridOptions=grid_options, theme='blue')  # Tabela interativa com tema 'blue'
+    AgGrid(dados_simulados, gridOptions=grid_options, theme='light')  # Tabela interativa com tema 'light'
 
-elif menu == "Mapa":
+elif menu == "Mapa Interativo":
     st.subheader("Mapa dos Ônibus Simulados")
     mapa = criar_mapa(dados_simulados)
     st_folium(mapa, width=700, height=500)
