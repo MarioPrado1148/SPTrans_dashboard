@@ -56,7 +56,7 @@ def plot_pizza_destino(dados):
     return fig
 
 # Título da aplicação
-st.title("Dados Simulados de Ônibus - SPTrans - FIA")
+st.title("Dados Simulados de Ônibus - Didático - Indigestion")
 
 # Barra lateral para selecionar a visualização
 menu = st.sidebar.radio("Escolha a visualização:", ["Tabela", "Mapa Interativo", "Linha x Horário de Chegada", "Atraso por Linha", "Proporção de Ônibus por Destino"])
