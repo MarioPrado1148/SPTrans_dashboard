@@ -6,6 +6,7 @@ import folium
 from streamlit_folium import st_folium
 
 # Função para gerar dados simulados da SPTrans
+@st.cache_data
 def gerar_dados_sptrans_simulados(n_linhas=5, n_onibus=30):
     linhas = [f'{random.randint(1000,9999)}-{random.randint(10,99)}' for _ in range(n_linhas)]
     destinos = ['Terminal A', 'Terminal B', 'Centro', 'Bairro X', 'Bairro Y']
@@ -23,6 +24,20 @@ def gerar_dados_sptrans_simulados(n_linhas=5, n_onibus=30):
     df_simulado = pd.DataFrame(data)
     return df_simulado
 
+# Função para criar o mapa
+@st.cache_data
+def criar_mapa(dados):
+    mapa = folium.Map(location=[-23.5505, -46.6333], zoom_start=12)
+
+    for index, row in dados.iterrows():
+        folium.Marker(
+            location=[row['latitude'], row['longitude']],
+            popup=f"Linha: {row['linha']}<br>Destino: {row['destino']}<br>Chegada: {row['previsao_chegada']}",
+            icon=folium.Icon(color="blue", icon="bus", prefix="fa")
+        ).add_to(mapa)
+
+    return mapa
+
 # Título da aplicação
 st.title("Dados Simulados de Ônibus - SPTrans")
 
@@ -33,17 +48,7 @@ dados_simulados = gerar_dados_sptrans_simulados()
 st.subheader("Tabela de Dados Simulados")
 st.dataframe(dados_simulados)
 
-# Criar o mapa
+# Criar e exibir o mapa
 st.subheader("Mapa dos Ônibus Simulados")
-mapa = folium.Map(location=[-23.5505, -46.6333], zoom_start=12)
-
-# Adicionar os pontos dos ônibus ao mapa
-for index, row in dados_simulados.iterrows():
-    folium.Marker(
-        location=[row['latitude'], row['longitude']],
-        popup=f"Linha: {row['linha']}<br>Destino: {row['destino']}<br>Chegada: {row['previsao_chegada']}",
-        icon=folium.Icon(color="blue", icon="bus", prefix="fa")
-    ).add_to(mapa)
-
-# Mostrar o mapa interativo no Streamlit
+mapa = criar_mapa(dados_simulados)
 st_folium(mapa, width=700, height=500)
