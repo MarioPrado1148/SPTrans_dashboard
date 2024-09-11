@@ -4,7 +4,6 @@ import random
 import numpy as np
 import folium
 from streamlit_folium import st_folium
-from st_aggrid import AgGrid, GridOptionsBuilder
 
 # Função para gerar dados simulados da SPTrans
 @st.cache_data
@@ -52,13 +51,8 @@ dados_simulados = gerar_dados_sptrans_simulados()
 if menu == "Tabela":
     st.subheader("Tabela de Dados Simulados")
     
-    # Melhorar a tabela usando AgGrid
-    gb = GridOptionsBuilder.from_dataframe(dados_simulados)
-    gb.configure_pagination(paginationAutoPageSize=True)  # Paginação automática
-    gb.configure_side_bar()  # Barra lateral de ferramentas
-    grid_options = gb.build()
-    
-    AgGrid(dados_simulados, gridOptions=grid_options, theme='light')  # Tabela interativa com tema 'light'
+    # Exibir a tabela usando a função nativa do Streamlit
+    st.dataframe(dados_simulados)
 
 elif menu == "Mapa Interativo":
     st.subheader("Mapa dos Ônibus Simulados")
